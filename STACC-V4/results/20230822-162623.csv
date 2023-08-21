@@ -1,0 +1,236 @@
+Model,Temperature,Top_p,Frequency_penalty,Presence_penalty,Code Generated,Passed,Error Report,Execution Time for testcases (seconds),Memory Usage (KiB)
+gpt-4,0,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Find records in the table that match the given template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+                 that matches the template. The dictionary only contains the requested fields.
+        """"""
+        # Build the SQL query
+        sql = ""SELECT ""
+        if field_list:
+            sql += "", "".join(field_list)
+        else:
+            sql += ""*""
+        sql += "" FROM "" + self.table_name + "" WHERE ""
+        sql += "" AND "".join([f""{k}='{v}'"" for k, v in template.items()])
+
+        # Execute the query and fetch the results
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+
+        # Build the list of dictionaries to return
+        result = []
+        for row in rows:
+            d = {}
+            for i, col_name in enumerate(cursor.description):
+                if not field_list or col_name[0] in field_list:
+                    d[col_name[0]] = row[i]
+            result.append(d)
+
+        return result",0,"{'total': 13, 'passed': 0, 'failed': 0, 'skipped': 0, 'errors': 13, 'failure_details': []}",0.03336750000016764,17.07421875,0
+gpt-4,0.25,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Find records in the table that match the template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+                 that matches the template. The dictionary only contains the requested fields.
+        """"""
+        # Build the SQL query
+        sql = ""SELECT ""
+        if field_list:
+            sql += "", "".join(field_list)
+        else:
+            sql += ""*""
+        sql += "" FROM "" + self.table_name + "" WHERE ""
+        sql += "" AND "".join([f""{k}='{v}'"" for k, v in template.items()])
+
+        # Execute the query and get the results
+        result_set = self._run_query(sql)
+
+        # Convert the result set to a list of dictionaries
+        result_list = []
+        for row in result_set:
+            result_dict = {}
+            for i in range(len(row)):
+                if field_list:
+                    result_dict[field_list[i]] = row[i]
+                else:
+                    result_dict[self._column_names[i]] = row[i]
+            result_list.append(result_dict)
+
+        return result_list",0,"{'total': 13, 'passed': 0, 'failed': 0, 'skipped': 0, 'errors': 13, 'failure_details': []}",0.03366899996763095,17.046875,0.25
+gpt-4,0.5,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Find records in the table that match the given template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+                 that matches the template. The dictionary only contains the requested fields.
+        """"""
+        result = []
+        with open(self.table_name + "".csv"", ""r"") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if all(row.get(key) == str(value) for key, value in template.items()):
+                    if field_list:
+                        result.append({field: row[field] for field in field_list})
+                    else:
+                        result.append(row)
+        return result",11,"{'total': 13, 'passed': 11, 'failed': 2, 'skipped': 0, 'errors': 0, 'failure_details': [{'test': <TestCases.CombinedTests testMethod=test_empty_field_list_multiple>, 'exception': 'Traceback (most recent call last):\n  File ""C:\\Users\\1129c\\Downloads\\STACC-V3\\src\\TestCases.py"", line 45, in test_empty_field_list_multiple\n    self.assertEqual(result, {})\nAssertionError: {\'playerID\': \'sciosmi01\', \'yearID\': \'2000\'[107 chars] \'N\'} != {}\n+ {}\n- {\'G\': \'162\',\n-  \'L\': \'80\',\n-  \'W\': \'82\',\n-  \'inseason\': \'1\',\n-  \'lgID\': \'AL\',\n-  \'playerID\': \'sciosmi01\',\n-  \'plyrMgr\': \'N\',\n-  \'rank\': \'3\',\n-  \'teamID\': \'ANA\',\n-  \'yearID\': \'2000\'}\n'}, {'test': <TestCases.CombinedTests testMethod=test_invalid_template_field>, 'exception': 'Traceback (most recent call last):\n  File ""C:\\Users\\1129c\\Downloads\\STACC-V3\\src\\TestCases.py"", line 22, in test_invalid_template_field\n    with self.assertRaises(KeyError):\nAssertionError: KeyError not raised\n'}]}",0.5040598000050522,36.8056640625,0.5
+gpt-4,0.75,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Find records in the table that match the template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+                 that matches the template. The dictionary only contains the requested fields.
+        """"""
+        # Build the SQL query string based on the template
+        sql = ""SELECT * FROM "" + self.table_name + "" WHERE ""
+        sql += "" AND "".join([f""{k}='{v}'"" for k, v in template.items()])
+
+        # Add the requested fields to the query if specified
+        if field_list:
+            sql = sql.replace(""*"", "", "".join(field_list))
+
+        # Execute the query and return the results as a list of dictionaries
+        with open(self.table_name + "".csv"", ""r"") as f:
+            reader = csv.DictReader(f)
+            results = []
+            for row in reader:
+                if all(row.get(k) == v for k, v in template.items()):
+                    if field_list:
+                        row = {k: v for k, v in row.items() if k in field_list}
+                    results.append(row)
+        return results",11,"{'total': 13, 'passed': 11, 'failed': 2, 'skipped': 0, 'errors': 0, 'failure_details': [{'test': <TestCases.CombinedTests testMethod=test_empty_field_list_multiple>, 'exception': 'Traceback (most recent call last):\n  File ""C:\\Users\\1129c\\Downloads\\STACC-V3\\src\\TestCases.py"", line 45, in test_empty_field_list_multiple\n    self.assertEqual(result, {})\nAssertionError: {\'playerID\': \'sciosmi01\', \'yearID\': \'2000\'[107 chars] \'N\'} != {}\n+ {}\n- {\'G\': \'162\',\n-  \'L\': \'80\',\n-  \'W\': \'82\',\n-  \'inseason\': \'1\',\n-  \'lgID\': \'AL\',\n-  \'playerID\': \'sciosmi01\',\n-  \'plyrMgr\': \'N\',\n-  \'rank\': \'3\',\n-  \'teamID\': \'ANA\',\n-  \'yearID\': \'2000\'}\n'}, {'test': <TestCases.CombinedTests testMethod=test_invalid_template_field>, 'exception': 'Traceback (most recent call last):\n  File ""C:\\Users\\1129c\\Downloads\\STACC-V3\\src\\TestCases.py"", line 22, in test_invalid_template_field\n    with self.assertRaises(KeyError):\nAssertionError: KeyError not raised\n'}]}",0.5525334000703879,36.966796875,0.75
+gpt-4,1.0,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Find records that match the template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+        that matches the template. The dictionary only contains the requested fields.
+        """"""
+        result = []
+        for row in self.get_rows():
+            match = True
+            for field, value in template.items():
+                if row[field] != value:
+                    match = False
+                    break
+            if match:
+                if field_list:
+                    result.append({field: row[field] for field in field_list})
+                else:
+                    result.append(row)
+        return result",0,"{'total': 13, 'passed': 0, 'failed': 0, 'skipped': 0, 'errors': 13, 'failure_details': []}",0.029428499983623624,16.9462890625,1.0
+gpt-4,1.25,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        # Create the SQL SELECT statement
+        sql = ""SELECT * FROM "" + self.table_name + "" WHERE ""
+        params = []
+        for key in template:
+            sql += key + ""=%s AND ""
+            params.append(template[key])
+        sql = sql[:-5]  # Remove the last ""AND""
+        if field_list is not None:
+            sql = sql.replace(""*"", "","".join(field_list))
+
+        # Execute the SQL statement and get the results
+        cursor = self._cnx.cursor()
+        cursor.execute(sql, params)
+        result = cursor.fetchall()
+        cursor.close()
+
+        # Convert the results to a list of dictionaries
+        result_list = []
+        for row in result:
+            row_dict = {}
+            for i in range(len(cursor.description)):
+                if field_list is None or cursor.description[i][0] in field_list:
+                    row_dict[cursor.description[i][0]] = row[i]
+            result_list.append(row_dict)
+
+        return result_list",0,"{'total': 13, 'passed': 0, 'failed': 0, 'skipped': 0, 'errors': 13, 'failure_details': []}",0.03667449997738004,17.0908203125,1.25
+gpt-4,1.5,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Returns a list of records that match the template.
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+        that matches the template. The dictionary only contains the requested fields.
+        """"""
+        result_set = []
+        for row in self.get_rows():
+            if self.matches_template(row, template):
+                result_set.append(self.project(row, field_list))
+        return result_set",0,"{'total': 13, 'passed': 0, 'failed': 0, 'skipped': 0, 'errors': 13, 'failure_details': []}",0.02779510003165342,16.8994140625,1.5
+gpt-4,1.75,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Retrieve records that match the template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+                 that matches the template. The dictionary only contains the requested fields.
+        """"""
+        result_set = []
+        with open(self.table_name + "".csv"", ""r"") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                match = True
+                for key in template:
+                    if row[key] != template[key]:
+                        match = False
+                        break
+                if match:
+                    if field_list is None:
+                        result_set.append(row)
+                    else:
+                        filtered_row = {field: row[field] for field in field_list}
+                        result_set.append(filtered_row)
+        return result_set",12,"{'total': 13, 'passed': 12, 'failed': 0, 'skipped': 0, 'errors': 1, 'failure_details': []}",0.3594710999750532,36.8056640625,1.75
+gpt-4,2.0,0.7,0,0,"    def find_by_template(self, template, field_list=None):
+        """"""
+        Find records that match the template.
+
+        :param template: A dictionary of the form { ""field1"" : value1, ""field2"": value2, ...}
+        :param field_list: A list of request fields of the form, ['fielda', 'fieldb', ...]
+        :return: A list containing dictionaries. A dictionary is in the list representing each record
+                 that matches the template. The dictionary only contains the requested fields.
+        """"""
+        # Create the SQL SELECT statement based on the template and field_list
+        select_clause = ""SELECT ""
+        if field_list:
+            select_clause += "", "".join(field_list)
+        else:
+            select_clause += ""*""
+        from_clause = "" FROM "" + self.table_name
+        where_clause = "" WHERE ""
+        for k, v in template.items():
+            if isinstance(v, str):
+                where_clause += k + ""='"" + v + ""' AND ""
+            else:
+                where_clause += k + ""="" + str(v) + "" AND ""
+        where_clause = where_clause[:-5]  # Remove the trailing "" AND ""
+        sql = select_clause + from_clause + where_clause
+
+        # Execute the SQL statement and fetch the results
+        result = []
+        rows = self._run_query(sql)
+        for row in rows:
+            row_dict = {}
+            for i, col_name in enumerate(self.column_names):
+                if not field_list or col_name in field_list:
+                    row_dict[col_name] = row[i]
+            result.append(row_dict)
+        return result",0,"{'total': 13, 'passed': 0, 'failed': 0, 'skipped': 0, 'errors': 13, 'failure_details': []}",0.0337805999442935,17.3115234375,2.0
